@@ -1,24 +1,44 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This Rails app has been intentionally designed in a way that there are areas for improvement.
 
-Things you may want to cover:
+It's your mission to find this places and refactor them.
 
-* Ruby version
+## Requirements to run this app
 
-* System dependencies
+* Ruby version: `3.2.0`
+* Database: `sqlite3`
 
-* Configuration
+## How to setup this app
+```sh
+bin/setup
+```
 
-* Database creation
+## Useful commands
 
-* Database initialization
+* `bin/rails test` - it will run the test suite.
+* `bin/rails rubycritic` - it will generate a quality report of this codebase.
 
-* How to run the test suite
+## Examples of cURL requests to interact with the API
 
-* Services (job queues, cache servers, search engines, etc.)
+First, run the application:
 
-* Deployment instructions
+```sh
+bin/rails s
+```
 
-* ...
+Then, use some of the following commands to interact with the API resources:
+
+### Creating a token
+```sh
+curl -X GET "http://localhost:3000/get_token" \
+  -H "Content-Type: application/json"
+```
+
+### Calculate imc
+```sh
+curl -X POST "http://localhost:3000/imc" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer SOME-USER-TOKEN" \
+  -d '{"imc": { "height": 1.70, "weight": 76}}'
+```
