@@ -1,29 +1,28 @@
 class ApplicationController < ActionController::API
-  before_action :require_jwt
-
   def require_jwt
-    token = request.headers["HTTP_AUTHORIZATION"]
-    if !token
-      head :forbidden
-    end
-    if !valid_token(token)
-      head :forbidden
-    end
+    token = request.headers['HTTP_AUTHORIZATION']
+    head :forbidden unless token
+    return if valid_token(token)
+
+    head :forbidden
   end
 
   private
-  def valid_token(token)
-    unless token
-      return false
-    end
 
-    token.gsub!('Bearer ','')
+  def valid_token(token)
+    return false unless token
+
+    token.gsub!('Bearer ', '')
     begin
-      decoded_token = JWT.decode token, Rails.configuration.x.oauth.jwt_secret, true
+      decoded_token = JWT.decode token, 'HS256'
       return true
-    rescue JWT::DecodeError
-      Rails.logger.warn "Error decoding the JWT: "+ e.to_s
+    rescue JWT::DecodeError => e
+      Rails.logger.warn 'Error decoding the JWT: ' + e.to_s
     end
     false
+  end
+
+  def render_json(status, json = {})
+    render status:, json:
   end
 end
